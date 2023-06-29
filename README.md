@@ -22,7 +22,7 @@ $ cargo run complete "Learn Rust"
 
 - [x] Add a task
 - [x] Persist tasks
-- [ ] Mark a task as complete
+- [x] Mark a task as complete
 - [ ] List tasks
 - [ ] Delete a task
 - [ ] Store tasks in a database

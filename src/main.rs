@@ -24,6 +24,7 @@ fn main() {
     // };
     let mut todo = Todo::new().expect("Initialisation of db failed");
 
+    // Adding a task to the Todo list
     if action == "add" {
         // we call the insert method
         todo.insert(item);
@@ -31,6 +32,19 @@ fn main() {
         match todo.save() {
             Ok(_) => println!("Todo Saved"),
             Err(why) => println!("An error occurred: {}", why),
+        }
+    }
+
+    // Crossing out a task from the list
+    else if action == "complete" {
+        match todo.complete(&item) {
+            None => println!("'{}' is not present in the list", item),
+            // Match returns the actual item, so we save it
+            Some(_) => match todo.save() {
+                // The save method returns a Result. We can error handle here
+                Ok(_) => println!("todo saved"),
+                Err(why) => println!("An error occurred: {}", why),
+            },
         }
     }
 }
@@ -108,10 +122,24 @@ impl Todo {
         // We persist the data in the db.txt file (using filesystem a.k.a. fs)
         std::fs::write("db.txt", content)
     }
+
+    // Method to complete a task
+    // return type is an empty option
+    // the function returns the result of the match expression (either an empty Some() or None)
+    fn complete(&mut self, key: &String) -> Option<()>{
+        // The .get_mut method gives a mutable ref to the value of the key (None if not found)
+        match self.map.get_mut(key) {
+            // We need to de-reference the value (pointer)
+            Some(v) => Some(*v = false),
+            None => None,
+        }
+    }
 }
 
 // The ownership system has three rules: Each value in Rust has a variable: its
 // owner. There can only be one owner at a time for each value. When the owner
 // goes out of scope, the value will be dropped.
 
-// Questions: what is ? what does | do?
+// Questions: what is "?"
+// what does "|" do?
+// what does => do?
