@@ -1,5 +1,6 @@
 // Imports
-use std::{collections::HashMap, fmt::format};
+use std::{collections::HashMap, io::Read};
+use std::str::FromStr;
 
 // All variables are immutable by default We can opt to make it mutable by using
 // "mut"
@@ -15,10 +16,13 @@ fn main() {
 
     println!("Recieved action: {:?}, and item: {:?}", action, item);
 
-    // We instanciate the class and initialize the map. The todo instance is mutable
-    let mut todo = Todo{
-        map: HashMap::new(),
-    };
+    // We instanciate the class and initialize the map. The todo instance is
+    // mutable (we use the new function in the class to avoid overwriting the file)
+    // THIS WOULD OVERWRITE:
+    // let mut todo = Todo{
+    //     map: HashMap::new(),
+    // };
+    let mut todo = Todo::new().expect("Initialisation of db failed");
 
     if action == "add" {
         // we call the insert method
@@ -40,6 +44,44 @@ struct Todo {
 
 // impl Todo to add methods to the struct Their first parameter is ALWAYS self
 impl Todo {
+    // This is not a method since self is not the first argumen. This is
+    // necesary since our program shouldn't overwrite the map, it should update
+    // it. The fn returns the todo struct or an error Functional programming
+    // approach. NOTE: a "for loop" alternative is available in the tutorial
+    // followed
+    // (https://www.freecodecamp.org/news/how-to-build-a-to-do-app-with-rust/)
+    fn new() -> Result<Todo, std::io::Error>{
+        // f is the file. Here we define that we will create the file if it
+        // doesn't exist let us read and write to the file.
+        let mut f = std::fs::OpenOptions::new()
+            .write(true)
+            .create(true)
+            .read(true)
+            .open("db.txt")?;
+
+        // Empty string that will store the whole file
+        let mut content = String::new();
+        // Reads the file and appends to the content string
+        f.read_to_string(&mut content)?;
+
+        // Convert the string to a hash map
+        let map: HashMap<String, bool> = content
+            // create an iterator over each line of a string (we go line by
+            // line)
+            .lines()
+            // Split the line with tab and convert the iterator into the
+            // relevant collection
+            .map(|line| line.splitn(2,"\t").collect::<Vec<&str>>())
+            // Transform the result into a tuple
+            .map(|v| (v[0], v[1]))
+            // Convert the two elements of the tuple into a String and a boolean
+            .map(|(k, v)| (String::from(k), bool::from_str(v).unwrap()))
+            // Collect into hashmap (type infered from binding declaration)
+            .collect();
+        // Return the todo with the map
+        Ok(Todo { map })
+    }
+
     // we declare a function (method) It takes two arguments, the first is self
     // (a mutable pointer to the location where value is stored and the key)
     // NOTE: this is a borrow since we don't "own" self (use &)
@@ -51,7 +93,8 @@ impl Todo {
 
     // We will write to a file to store todo's
     fn save(self) -> Result<(), std::io::Error>
-    // Here, -> is for typing the return of the function (it returns a result for error handling)
+    // Here, -> is for typing the return of the function (it returns a result
+    // for error handling)
      {
         let mut content = String::new();
 
@@ -62,7 +105,7 @@ impl Todo {
             let record = format!("{}\t{}\n",k,v);
             content.push_str(&record)
         }
-        // We persist the data in the db.txt file
+        // We persist the data in the db.txt file (using filesystem a.k.a. fs)
         std::fs::write("db.txt", content)
     }
 }
@@ -70,3 +113,5 @@ impl Todo {
 // The ownership system has three rules: Each value in Rust has a variable: its
 // owner. There can only be one owner at a time for each value. When the owner
 // goes out of scope, the value will be dropped.
+
+// Questions: what is ? what does | do?

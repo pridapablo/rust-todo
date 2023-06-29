@@ -9,16 +9,22 @@ Note: in the initial implementation the todo list is stored in a file for long t
 ### Add a task
 
 ```rust
-$ cargo run add "Buy milk"
+$ cargo run add "Learn Rust"
 ```
 
-## Roadmap:
+### Mark a task as complete
+
+```rust
+$ cargo run complete "Learn Rust"
+```
+
+## Roadmap (a.k.a. a todo list for making a todo list)
 
 - [x] Add a task
-- [ ] List tasks
+- [x] Persist tasks
 - [ ] Mark a task as complete
+- [ ] List tasks
 - [ ] Delete a task
-- [ ] Store tasks in a file
 - [ ] Store tasks in a database
 - [ ] Add a due date to a task
 - [ ] Add a priority to a task
@@ -26,8 +32,3 @@ $ cargo run add "Buy milk"
 - [ ] List tasks by due date
 - [ ] List tasks by priority
 - [ ] List tasks by project
-- [ ] Add a command to list all tasks
-- [ ] Add a command to list all tasks by due date
-- [ ] Add a command to list all tasks by priority
-- [ ] Add a command to list all tasks by project
-- [ ] Add a command to list all tasks by due date and priority
