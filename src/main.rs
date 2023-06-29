@@ -72,6 +72,7 @@ impl Todo {
             .create(true)
             .read(true)
             .open("db.txt")?;
+        // ? is for error handling (propagates the error up the call stack)
 
         // Empty string that will store the whole file
         let mut content = String::new();
@@ -83,6 +84,7 @@ impl Todo {
             // create an iterator over each line of a string (we go line by
             // line)
             .lines()
+            // The following are anon functions (|params| operation). This is known as a closure
             // Split the line with tab and convert the iterator into the
             // relevant collection
             .map(|line| line.splitn(2,"\t").collect::<Vec<&str>>())
@@ -132,6 +134,9 @@ impl Todo {
             // We need to de-reference the value (pointer)
             Some(v) => Some(*v = false),
             None => None,
+            // The "=>" operator is used in several contexts:
+            // In a match expression, it separates the pattern from the code to run if the pattern matches.
+            // In a closure with more than one expression, it separates the parameters from the function body. This is similar to the "=>" operator in JavaScript or the "lambda" keyword in Python.
         }
     }
 }
