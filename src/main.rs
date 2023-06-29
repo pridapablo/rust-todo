@@ -139,7 +139,3 @@ impl Todo {
 // The ownership system has three rules: Each value in Rust has a variable: its
 // owner. There can only be one owner at a time for each value. When the owner
 // goes out of scope, the value will be dropped.
-
-// Questions: what is "?"
-// what does "|" do?
-// what does => do?
